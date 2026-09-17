@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turizmas - Pagrindinis</title>
+  <style>
+    /* Pašalintas priverstinis vertical scroll ir sutvarkytas plotis */
+    html, body { margin: 0; padding: 0; width: 100%; min-height: 100vh; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box; }
+    *, *:before, *:after { box-sizing: inherit; }
+    
+    #main-logo { letter-spacing: 1px; }
+    #app-body { background-color: #f9fafb; color: #1f2937; display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+    
+    #header { position: sticky; top: 0; z-index: 50; background-color: #047857; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; padding: 0.75rem 0.5rem; }
+    @media (min-width: 640px) { #header { padding: 1rem 1.5rem; } }
+
+    #header-wrap { max-width: 80rem; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 100%; }
+    @media (min-width: 768px) { #header-wrap { flex-direction: row; justify-content: space-between; gap: 0; } }
+
+    #main-logo { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.25rem; margin: 0; white-space: nowrap; }
+    @media (min-width: 640px) { #main-logo { font-size: 1.5rem; } }
+    #main-logo:hover { opacity: 0.9; }
+
+    .nav-menu-class { display: block; width: 100%; }
+    @media (min-width: 768px) { .nav-menu-class { width: auto; } }
+
+    #nav-list { display: flex; flex-direction: row; justify-content: center; gap: 0.8rem; font-weight: 500; list-style: none; padding: 0; margin: 0; white-space: nowrap; }
+    @media (min-width: 640px) { #nav-list { gap: 1.5rem; } }
+    @media (min-width: 768px) { #nav-list { gap: 2rem; justify-content: flex-end; } }
+
+    .nav-link-main { text-decoration: underline; font-weight: 700; display: block; padding: 0.15rem 0; color: #ffffff; font-size: 0.8rem; }
+    @media (min-width: 640px) { .nav-link-main { font-size: 1rem; } }
+
+    .nav-link { display: block; padding: 0.15rem 0; color: #ffffff; text-decoration: none; font-size: 0.8rem; }
+    @media (min-width: 640px) { .nav-link { font-size: 1rem; } }
+    .nav-link:hover { text-decoration: underline; }
+
+    /* Pridėta align-items: start, kad aside sulygiuotų viršuje su pagrindiniu turiniu */
+    #content-container { flex-grow: 1; width: 100%; max-width: 80rem; margin-left: auto; margin-right: auto; padding: 1.5rem 1rem; display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: start; }
+    @media (min-width: 640px) { #content-container { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) { #content-container { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+    .main-section-class { width: 100%; display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
+    @media (min-width: 1024px) { .main-section-class { grid-column: span 3 / span 3; } }
+
+    #intro-card { background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; padding: 1.25rem; width: 100%; display: flex; flex-direction: column; gap: 0.75rem; }
+    @media (min-width: 640px) { #intro-card { padding: 1.5rem; } }
+
+    .intro-title-class { font-size: 1.5rem; font-weight: 700; color: #065f46; margin: 0; }
+    
+    /* Paveldėjimo (inherit) pritaikymas esamam elementui */
+    /* Pavyzdys: paveldi spalvą iš tėvinio #intro-card arba body elemento */
+    #intro-desc { line-height: 1.625; margin: 0; color: inherit; }
+    
+    .action-buttons-group-class { display: flex; flex-direction: column; gap: 0.75rem; padding-top: 0.5rem; }
+    @media (min-width: 640px) { .action-buttons-group-class { flex-direction: row; flex-wrap: wrap; } }
+
+    #btn-italy-deal { background-color: #059669; color: #ffffff; padding: 0.65rem 1.25rem; border-radius: 0.375rem; font-weight: 700; transition: background-color 0.2s; border: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; font-size: 0.95rem; }
+    #btn-italy-deal:hover { background-color: #047857; }
+
+    /* Kaskados mechanizmo (!important) pritaikymas esamam elementui */
+    /* Pavyzdys: užtikrina, kad egzotinių maršrutų mygtukas nepasikeistų net jei bendra klasė jį perrašytų */
+    .btn-exotic-class { background-color: #d97706 !important; color: #ffffff; padding: 0.65rem 1.25rem; 
+    border-radius: 0.375rem; font-weight: 700; transition: background-color 0.2s; border: none; text-align: center; 
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; font-size: 0.95rem; }
+    .btn-exotic-class:hover { background-color: #b45309; }
+
+    #cards-container { display: grid; grid-template-columns: 1fr; gap: 1rem; width: 100%; }
+    @media (min-width: 640px) { #cards-container { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { #cards-container { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+    .card-item { background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; padding: 1.25rem; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: flex-start; width: 100%; }
+    .card-item:hover { transform: translateY(-3px); }
+    #card-icon-1, #card-icon-2, #card-icon-3 { font-size: 1.875rem; margin-bottom: 0.5rem; width: 100%; display: block; }
+    .card-title-class { font-weight: 700; color: #065f46; font-size: 1.125rem; margin-bottom: 0.25rem; margin-top: 0; width: 100%; }
+    #card-desc-1, #card-desc-2, #card-desc-3 { color: #4b5563; font-size: 0.875rem; margin: 0; width: 100%; }
+
+    .analytics-chart-class { background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; padding: 1.25rem; width: 100%; display: flex; flex-direction: column; gap: 0.75rem; }
+    @media (min-width: 640px) { .analytics-chart-class { padding: 1.5rem; } }
+    #chart-main-title { font-size: 1.25rem; font-weight: 700; color: #065f46; margin: 0; }
+    .chart-sub-class { color: #4b5563; font-size: 0.875rem; margin: 0; }
+    
+    #chart-bars-wrap { height: 12rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 0.5rem; border-bottom: 2px solid #047857; border-left: 2px solid #047857; padding: 0.5rem; width: 100%; }
+    .chart-bar { transition: height 0.5s ease, opacity 0.3s; width: 100%; border-top-left-radius: 0.25rem; border-top-right-radius: 0.25rem; display: flex; justify-content: center; align-items: center; color: #ffffff; font-weight: 700; font-size: 0.75rem; }
+    .chart-bar:hover { opacity: 0.8; }
+    @media (min-width: 640px) { .chart-bar { font-size: 0.875rem; } }
+    
+    #bar-january { background-color: #34d399; height: 30%; }
+    .bar-feb-class { background-color: #34d399; height: 40%; }
+    #bar-march { background-color: #10b981; height: 55%; }
+    .bar-apr-class { background-color: #10b981; height: 70%; }
+    #bar-may { background-color: #059669; height: 85%; }
+    .bar-jun-class { background-color: #047857; height: 100%; }
+
+    #pricing-section { background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; padding: 1.25rem; width: 100%; display: flex; flex-direction: column; gap: 0.75rem; }
+    @media (min-width: 640px) { #pricing-section { padding: 1.5rem; } }
+    .pricing-heading-class { font-size: 1.25rem; font-weight: 600; margin: 0; color: #065f46; }
+    #pricing-subtext { color: #6b7280; font-size: 0.875rem; margin: 0; }
+    
+    .pricing-scroll-class { overflow-x: auto; width: 100%; }
+    #pricing-table { width: 100%; text-align: left; border-collapse: collapse; min-width: 500px; }
+    .table-head-class { background-color: #d1fae5; border-bottom: 1px solid #e5e7eb; color: #064e3b; }
+    .table-th { padding: 0.75rem; }
+    
+    #table-body tr { border-top: 1px solid #e5e7eb; transition: background-color 0.2s; }
+    #table-body tr:hover { background-color: #ecfdf5 !important; }
+    .td-cell, .td-bold { padding: 0.75rem; vertical-align: middle; }
+    .td-bold { font-weight: 600; }
+    #price-italy, #price-spain, #price-greece, #price-france, #price-japan, #price-thailand, #price-egypt, #price-norway { padding: 0.75rem; color: #059669; font-weight: 700; vertical-align: middle; }
+
+    .sidebar-class { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; min-width: 0; }
+    @media (min-width: 1024px) { .sidebar-class { grid-column: span 1 / span 1; } }
+
+    #japan-promo-card { background-color: #065f46; color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; transition: all 0.3s ease; width: 100%; }
+    #japan-promo-card:hover { transform: translateY(-3px); }
+    .japan-title-class { font-weight: 700; font-size: 1.125rem; margin: 0; }
+    #japan-promo-desc { opacity: 0.9; font-size: 0.875rem; margin: 0; }
+
+    .news-widget-class, #weather-widget-container, .reviews-widget-class { background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; width: 100%; }
+    .sidebar-widget-title { font-weight: 700; font-size: 1rem; color: #064e3b; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.25rem; margin: 0; }
+    @media (min-width: 640px) { .sidebar-widget-title { font-size: 1.125rem; } }
+    
+    .widget-item-title { font-size: 0.75rem; font-weight: 700; margin: 0; }
+    #news-sub-1, #news-sub-2, #news-sub-3 { font-size: 0.6875rem; color: #6b7280; margin: 0; }
+
+    .weather-desc-class { font-size: 0.75rem; color: #4b5563; margin: 0; }
+    #weather-items-list { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.75rem; width: 100%; }
+    .weather-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background-color: #ecfdf5; border-radius: 0.25rem; border: 1px solid #a7f3d0; width: 100%; }
+    .weather-item-name { font-weight: 600; }
+    #temp-roma, #temp-barcelona, #temp-athens, #temp-paris, #temp-tokyo, #temp-bangkok, #temp-hurghada, #temp-bergen { color: #065f46; font-weight: 700; }
+
+    .reviews-widget-class { gap: 0.62rem; }
+    .review-box { padding: 0.375rem; border-radius: 0.25rem; width: 100%; }
+    #review-box-2, #review-box-3, #review-box-4, #review-box-5 { border-top: 1px solid #e5e7eb; padding: 0.375rem; border-radius: 0.25rem; }
+    .review-text { font-size: 0.75rem; color: #4b5563; font-style: italic; margin: 0; }
+    #author-1, #author-2, #author-3, #author-4, #author-5 { font-size: 0.6875rem; color: #047857; font-weight: 600; display: block; text-align: right; margin: 0; }
+
+    #main-footer { background-color: #1f2937; color: #e5e7eb; padding: 1rem; text-align: center; width: 100%; }
+    .footer-inner-class { max-width: 80rem; margin-left: auto; margin-right: auto; }
+    .footer-inner-class p { margin: 0; }
+  </style>
+</head>
+<body id="app-body">
+
+  <header id="header">
+    <div id="header-wrap">
+      <h1 id="main-logo">
+        🌍 <span>Turizmas: Kelionių Oazė</span>
+      </h1>
+
+      <nav class="nav-menu-class">
+        <ul id="nav-list">
+          <li><a href="turizmas.html" class="nav-link-main">Pagrindinis</a></li>
+          <li><a href="apie.html" class="nav-link">Apie mus</a></li>
+          <li><a href="galerija.html" class="nav-link">Galerija</a></li>
+          <li><a href="uzsakymas.html" class="nav-link">Užsakymas</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content-container">
+    <div class="main-section-class">
+      <div id="intro-card">
+        <h2 class="intro-title-class">Pasaulio Turizmo Atradimai ir Populiariausios Kryptys</h2>
+        <p id="intro-desc">Sveiki atvykę į mūsų kelionių portalą! Čia rasite naujausius sezono maršrutus, lėktuvų bilietų tendencijas bei išskirtinius pasiūlymus. Planuokite savo atostogas be jokio streso.</p>
+        <div class="action-buttons-group-class">
+          <button id="btn-italy-deal">
+            🔥 Karštas Pasiūlymas Italijai
+          </button>
+          <button class="btn-exotic-class">
+            🌴 Egzotiniai Maršrutai
+          </button>
+        </div>
+      </div>
+
+      <!-- Kortelių sekcija -->
+      <div id="cards-container">
+        <div class="card-item">
+          <div id="card-icon-1">🗺️</div>
+          <h3 class="card-title-class">Individualūs Maršrutai</h3>
+          <p id="card-desc-1">Planai sudaromi specialiai jums – jokių sausų gido grupių ar skubėjimo.</p>
+        </div>
+        <div class="card-item">
+          <div id="card-icon-2">👥</div>
+          <h3 class="card-title-class">Grupinės Kelionės</h3>
+          <p id="card-desc-2">Mėgaukitės bendraminčių draugija ir profesionalaus gido pasakojimais.</p>
+        </div>
+        <div class="card-item">
+          <div id="card-icon-3">💼</div>
+          <h3 class="card-title-class">Verslo Kelionės</h3>
+          <p id="card-desc-3">Greitas ir sklandus komandiruočių organizavimas įmonėms.</p>
+        </div>
+      </div>
+
+      <!-- Diagrama -->
+      <div class="analytics-chart-class">
+        <h3 id="chart-main-title">2026 m. Keliautojų Srautų Diagrama</h3>
+        <p class="chart-sub-class">Paspauskite ant stulpelio, kad pamatytumėte mėnesio statistiką.</p>
+        <div id="chart-bars-wrap">
+          <div id="bar-january" class="chart-bar">Saus</div>
+          <div class="bar-feb-class chart-bar">Vas</div>
+          <div id="bar-march" class="chart-bar">Kov</div>
+          <div class="bar-apr-class chart-bar">Bal</div>
+          <div id="bar-may" class="chart-bar">Geg</div>
+          <div class="bar-jun-class chart-bar">Bir</div>
+        </div>
+      </div>
+
+      <!-- Kainoraštis -->
+      <div id="pricing-section">
+        <h3 class="pricing-heading-class">Populiariausių Kelionių Kainoraštis</h3>
+        <p id="pricing-subtext">Spustelėkite ant bet kurios eilutės, kad peržiūrėtumėte išsamią programą.</p>
+        <div class="pricing-scroll-class">
+          <table id="pricing-table">
+            <thead>
+              <tr class="table-head-class">
+                <th class="table-th">Kryptis</th>
+                <th class="table-th">Miestas</th>
+                <th class="table-th">Trukmė</th>
+                <th class="table-th">Maitinimas</th>
+                <th class="table-th">Kaina</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td class="td-bold">Italija</td><td class="td-cell">Roma</td><td class="td-cell">7 d.</td><td class="td-cell">Pusryčiai</td><td id="price-italy">499 €</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Ispanija</td><td class="td-cell">Barselona</td><td class="td-cell">5 d.</td><td class="td-cell">Viskas įskaičiuota</td><td id="price-spain">399 €</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Graikija</td><td class="td-cell">Atėnai</td><td class="td-cell">7 d.</td><td class="td-cell">Pusryčiai/Vakarienė</td><td id="price-greece">549 €</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Prancūzija</td><td class="td-cell">Paryžius</td><td class="td-cell">4 d.</td><td class="td-cell">Pusryčiai</td><td id="price-france">450 €</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Japonija</td><td class="td-cell">Tokijas</td><td class="td-cell">10 d.</td><td class="td-cell">Pusryčiai</td><td id="price-japan">1299 €</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Tailandas</td><td class="td-cell">Bankokas</td><td class="td-cell">12 d.</td><td class="td-cell">Pusryčiai</td><td id="price-thailand">980 €</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Egiptas</td><td class="td-cell">Hurgada</td><td class="td-cell">7 d.</td><td class="td-cell">Viskas įskaičiuota</td><td id="price-egypt">420 €</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Norvegija</td><td class="td-cell">Bergenas</td><td class="td-cell">6 d.</td><td class="td-cell">Pusryčiai</td><td id="price-norway">670 €</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Šoninis skydelis -->
+    <aside class="sidebar-class">
+      <div id="japan-promo-card">
+        <h3 class="japan-title-class">Žemėlapių Gidas: Japonija 🗾 ➔</h3>
+        <p id="japan-promo-desc">Spustelėkite čia ir Sužinokite, ką reiškia unikalūs simboliai Japonijos žemėlapiuose.</p>
+      </div>
+
+      <div class="news-widget-class">
+        <h3 class="sidebar-widget-title">Naujienos ir Patarimai</h3>
+        
+        <div class="widget-item">
+          <p class="widget-item-title">Kada geriausia pirkti bilietus?</p>
+          <p id="news-sub-1">Skaityti daugiau ➔</p>
+        </div>
+
+        <div class="widget-item">
+          <p class="widget-item-title">Dokumentų ruošimas</p>
+          <p id="news-sub-2">Skaityti daugiau ➔</p>
+        </div>
+
+        <div class="widget-item">
+          <p class="widget-item-title">Kodėl svarbus kelionės draudimas?</p>
+          <p id="news-sub-3">Skaityti daugiau ➔</p>
+        </div>
+      </div>
+
+      <!-- Orai -->
+      <div id="weather-widget-container">
+        <h3 class="sidebar-widget-title">☀️ Orai Kryptyse</h3>
+        <p class="weather-desc-class">Esama prognozė visoms kelionių kryptims:</p>
+
+        <div id="weather-items-list">
+          <div class="weather-item">
+            <span class="weather-item-name">🇮🇹 Roma</span>
+            <span id="temp-roma">☀️ +24°C</span>
+          </div>
+          <div class="weather-item">
+            <span class="weather-item-name">🇪🇸 Barselona</span>
+            <span id="temp-barcelona">⛅ +22°C</span>
+          </div>
+          <div class="weather-item">
+            <span class="weather-item-name">🇬🇷 Atėnai</span>
+            <span id="temp-athens">☀️ +26°C</span>
+          </div>
+          <div class="weather-item">
+            <span class="weather-item-name">🇫🇷 Paryžius</span>
+            <span id="temp-paris">🌤️ +19°C</span>
+          </div>
+          <div class="weather-item">
+            <span class="weather-item-name">🇯🇵 Tokijas</span>
+            <span id="temp-tokyo">☀️ +21°C</span>
+          </div>
+          <div class="weather-item">
+            <span class="weather-item-name">🇹🇭 Bankokas</span>
+            <span id="temp-bangkok">🌤️ +32°C</span>
+          </div>
+          <div class="weather-item">
+            <span class="weather-item-name">🇪🇬 Hurgada</span>
+            <span id="temp-hurghada">☀️ +30°C</span>
+          </div>
+          <div class="weather-item">
+            <span class="weather-item-name">🇳🇴 Bergenas</span>
+            <span id="temp-bergen">🌧️ +14°C</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Atsiliepimai -->
+      <div class="reviews-widget-class">
+        <h3 class="sidebar-widget-title">💬 Klientų Atsiliepimai</h3>
+        
+        <div class="review-box">
+          <p class="review-text">„Nuostabi kelionė į Romą! Viskas suorganizuota be jokių rūpesčių.“</p>
+          <span id="author-1">— Rasa M. ⭐⭐⭐⭐⭐</span>
+        </div>
+        <div id="review-box-2" class="review-box">
+          <p class="review-text">„Ačiū už puikų maršrutą Ispanijoje. Viešbutis pranoko lūkesčius!“</p>
+          <span id="author-2">— Mantas K. ⭐⭐⭐⭐⭐</span>
+        </div>
+        <div id="review-box-3" class="review-box">
+          <p class="review-text">„Kelionė į Tailandą buvo geriausios mano atostogos life!“</p>
+          <span id="author-3">— Dovilė S. ⭐⭐⭐⭐⭐</span>
+        </div>
+        <div id="review-box-4" class="review-box">
+          <p class="review-text">„Aukščiausia klasė organizuojant verslo komandiruotę.“</p>
+          <span id="author-4">— Tomas B. ⭐⭐⭐⭐⭐</span>
+        </div>
+        <div id="review-box-5" class="review-box">
+          <p class="review-text">„Atėnai sužavėjo! Kruizas po salas paliko neišdildomą įspūdį.“</p>
+          <span id="author-5">— Inga V. ⭐⭐⭐⭐⭐</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer id="main-footer">
+    <div class="footer-inner-class"><p>© 2026 Turizmo Portalas. Visos teisės saugomos.</p></div>
+  </footer>
+
+</body>
+</html>

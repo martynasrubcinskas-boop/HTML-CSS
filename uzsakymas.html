@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="lt" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="t-title">Turizmas - Užsakymas</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { overflow-y: scroll; height: 100%; }
+    #app-body { min-height: 100vh; display: flex; flex-direction: column; margin: 0; padding: 0; background-color: #f9fafb; color: #1f2937; font-family: system-ui, -apple-system, sans-serif; }
+
+    /* Header - suderintas su bendru dizainu */
+    #main-header { background-color: #047857; color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; padding: 0.75rem 0.5rem; position: sticky; top: 0; z-index: 50; }
+    @media (min-width: 640px) { #main-header { padding: 1rem 1.5rem; } }
+
+    .header-container { max-width: 80rem; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    @media (min-width: 768px) { .header-container { flex-direction: row; justify-content: space-between; gap: 0; } }
+
+    #main-logo { font-size: 1.1rem; font-weight: bold; letter-spacing: 1px; display: flex; align-items: center; gap: 0.25rem; margin: 0; white-space: nowrap; color: inherit; }
+    @media (min-width: 640px) { #main-logo { font-size: 1.5rem; } }
+    #main-logo:hover { opacity: 0.9; }
+
+    #nav-menu { display: block; width: 100%; }
+    @media (min-width: 768px) { #nav-menu { width: auto; } }
+
+    .nav-list { display: flex; flex-direction: row; justify-content: center; gap: 0.8rem; font-weight: 500; font-size: 0.8rem; list-style: none; padding: 0; margin: 0; white-space: nowrap; }
+    @media (min-width: 640px) { .nav-list { gap: 1.5rem; font-size: 1rem; } }
+    @media (min-width: 768px) { .nav-list { gap: 2rem; justify-content: flex-end; } }
+
+    .nav-link { text-decoration: none; color: inherit; display: block; padding: 0.15rem 0; font-family: inherit; }
+    .nav-link:hover { text-decoration: underline; }
+    .nav-link.underline { text-decoration: underline !important; font-weight: bold !important; }
+
+    /* Layout */
+    #main-layout-wrapper { max-width: 1280px; width: 100%; margin: 20px auto; padding: 0 24px; display: grid; grid-template-columns: 3fr 1fr; gap: 24px; box-sizing: border-box; flex-grow: 1; }
+    #main-content-area { display: flex; flex-direction: column; gap: 20px; }
+    #sidebar-area { display: flex; flex-direction: column; gap: 33px; }
+    .card { background: white; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); box-sizing: border-box; color: inherit; }
+    #steps-container { background-color: #065f46; color: white; padding: 20px; border-radius: 8px; box-sizing: border-box; }
+    .steps-title { font-size: 18px; font-weight: bold; margin-bottom: 12px; margin-top: 0; color: inherit; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 12px; }
+    .step-card { background-color: rgba(6, 78, 59, 0.6); padding: 12px; border-radius: 6px; border: 1px solid rgba(5, 150, 105, 0.4); font-size: 14px; color: inherit; }
+    .step-badge { background-color: #10b981; color: white; font-weight: bold; padding: 2px 8px; border-radius: 9999px; font-size: 12px; display: inline-block; margin-bottom: 4px; }
+    .step-heading { font-weight: bold; color: #f3f4f6; margin-bottom: 4px; }
+    .step-text { font-size: 12px; color: #e5e7eb; margin: 0; }
+    h2 { font-size: 22px; font-weight: bold; color: #065f46; margin-top: 0; margin-bottom: 8px; }
+    p { font-size: 14px; color: #4b5563; line-height: 1.5; margin: 0 0 16px 0; }
+    .calc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+    label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #374151; font-family: inherit; }
+    select, input, textarea { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
+    #calc-total-box { background-color: #ecfdf5; padding: 16px; border-radius: 6px; border: 1px solid #d1d5db; display: flex; justify-content: space-between; align-items: center; }
+    .total-title { font-weight: bold; color: #065f46; display: block; font-size: 16px; }
+    .total-subtitle { font-size: 12px; color: #6b7280; }
+    .total-price { font-size: 24px; font-weight: 800; color: #047857; }
+    .form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+    .form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+    #services-wrapper { background-color: #f9fafb; border: 1px solid #e5e7eb; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+    .services-title { font-weight: bold; color: #065f46; margin-bottom: 8px; display: block; }
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 14px; }
+    .checkbox-label { font-weight: normal; display: flex; align-items: center; gap: 8px; cursor: pointer; color: inherit; }
+    .checkbox-input { width: auto; margin: 0; }
+    .form-group-margin { margin-bottom: 16px; }
+    #submit-btn-main { background-color: #059669; color: white; padding: 10px 24px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; font-family: inherit; }
+    .guarantee-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .guarantee-item { padding: 12px; background-color: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb; color: inherit; }
+    .guarantee-heading { font-weight: bold; color: #065f46; margin: 0 0 4px 0; font-size: 14px; }
+    .guarantee-text { font-size: 12px; margin: 0; color: #4b5563; }
+    .aside-title { font-weight: bold; font-size: 16px; color: #065f46; margin-top: 0; margin-bottom: 8px; }
+    .aside-subtitle { font-size: 13px; margin-bottom: 12px; color: #4b5563; }
+    #payment-grid-box { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .payment-item { background-color: #f3f4f6; padding: 10px 8px; border-radius: 6px; font-weight: 600; color: #374151; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; text-align: center; border: 1px solid #e5e7eb; }
+    .baggage-list, .after-list, .faq-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #4b5563; }
+    .baggage-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background-color: #ecfdf5; border-radius: 4px; border: 1px solid #d1fae5; color: inherit; }
+    .baggage-item.paid { background-color: #f9fafb; border-color: #e5e7eb; }
+    .baggage-yes { font-weight: bold; color: #047857; }
+    .baggage-price { font-weight: bold; color: #d97706; }
+    .after-item { display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; color: inherit; }
+    .after-num { color: #059669; font-weight: bold; flex-shrink: 0; }
+    .faq-card-item { padding: 10px; background-color: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb; color: inherit; }
+    .faq-question { font-weight: bold; color: #1f2937; margin: 0 0 4px 0; font-size: 13px; }
+    .faq-answer { color: #6b7280; margin: 0; font-size: 12px; }
+    #group-card-box { background-color: #1b4332; color: white; padding: 20px; border-radius: 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 30px; position: relative; }
+    .group-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .group-icon-title { display: flex; align-items: center; gap: 12px; }
+    .group-icon-box { background-color: #2d6a4f; padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .group-title { font-weight: bold; font-size: 18px; margin: 0; color: inherit; line-height: 1.7; }
+    .group-badge { background-color: #2d6a4f; color: #52b788; font-size: 11px; font-weight: bold; padding: 6px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+    .group-desc { font-size: 13px; color: #d8f3dc; line-height: 1.5; margin: 0; }
+    .group-contact { background-color: #1b4332; border: 1px solid #2d6a4f; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: #d8f3dc; }
+    .group-contact-email { font-weight: bold; color: white; margin-left: auto; }
+    .card-title-border { font-size: 18px; font-weight: bold; color: #065f46; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-top: 0; margin-bottom: 16px; }
+    .reg-subtext { font-size: 12px; color: #6b7280; margin-bottom: 16px; }
+    .reg-title { margin-bottom: 4px; }
+    
+    /* Footer styles */
+    #main-footer { background-color: #1f2937; color: #e5e7eb; padding: 1rem; text-align: center; font-size: 14px; margin-top: auto; width: 100%; box-sizing: border-box; }
+    .footer-text { margin: 0; color: inherit !important; }
+
+    @media (max-width: 992px) { #main-layout-wrapper { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .calc-grid, .form-grid-2, .form-grid-3, .steps-grid, .guarantee-grid, .services-grid { grid-template-columns: 1fr; } .group-top { flex-direction: column; } .group-badge { align-self: flex-start; } .group-contact { flex-direction: column; align-items: flex-start; } .group-contact-email { margin-left: 0; } }
+  </style>
+</head>
+<body id="app-body">
+
+  <header id="main-header">
+    <div class="header-container">
+      <h1 id="main-logo">
+        🌍 <span>Turizmas: Kelionių Oazė</span>
+      </h1>
+      <nav id="nav-menu">
+        <ul class="nav-list">
+          <li><a href="turizmas.html" class="nav-link">Pagrindinis</a></li>
+          <li><a href="apie.html" class="nav-link">Apie mus</a></li>
+          <li><a href="galerija.html" class="nav-link">Galerija</a></li>
+          <li><a href="uzsakymas.html" class="nav-link underline">Užsakymas</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div id="main-layout-wrapper">
+    <main id="main-content-area">
+      <div id="steps-container">
+        <h3 class="steps-title">Kaip vyksta užsakymo procesas? 🗺️</h3>
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-badge">1 Žingsnis</span>
+            <p class="step-heading">Užpildykite Formą</p>
+            <p class="step-text">Pasirinkite šalį, datą ir įveskite savo kontaktus.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-badge">2 Žingsnis</span>
+            <p class="step-heading">Patvirtinimas ir Avansas</p>
+            <p class="step-text">Gaukite sąskaitą el. paštu ir apmokėkite 20% avansą.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-badge">3 Žingsnis</span>
+            <p class="step-heading">Bilietai Jūsų Pašte</p>
+            <p class="step-text">Likę dokumentai ir skrydžio bilietai atkeliauja el. paštu.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Kelionės Skaičiuoklė</h2>
+        <p>Pasirinkite šalį ir parametrus preliminariai sąmatai apskaičiuoti.</p>
+        <div class="calc-grid">
+          <div>
+            <label>Kryptis:</label>
+            <select>
+              <option>Italija (Roma) — 499 €</option>
+              <option>Ispanija (Barselona) — 399 €</option>
+              <option>Graikija (Atėnai) — 549 €</option>
+              <option>Prancūzija (Paryžius) — 450 €</option>
+              <option>Japonija (Tokijas) — 1299 €</option>
+              <option>Tailandas (Bankokas) — 980 €</option>
+              <option>Egiptas (Hurgada) — 420 €</option>
+              <option>Norvegija (Bergenas) — 670 €</option>
+            </select>
+          </div>
+          <div>
+            <label>Asmenų skaičius:</label>
+            <input type="number" min="1" max="10" value="1">
+          </div>
+          <div>
+            <label>Maitinimas:</label>
+            <select>
+              <option>Pusryčiai (+0 €/asm.)</option>
+              <option>Pusryčiai ir vakarienė (+100 €/asm.)</option>
+              <option>Viskas įskaičiuota (+200 €/asm.)</option>
+            </select>
+          </div>
+        </div>
+        <div id="calc-total-box">
+          <div>
+            <span class="total-title">Bendra Suma:</span>
+            <span class="total-subtitle">Galutinė kaina be papildomų paslaugų</span>
+          </div>
+          <span class="total-price">499 €</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="reg-title">Užsakymo Registracija</h2>
+        <p class="reg-subtext">Paspauskite čia papildomai informacijai pamatyti</p>
+        <form>
+          <div class="form-grid-2">
+            <div>
+              <label>Vardas, Pavardė:*</label>
+              <input type="text">
+            </div>
+            <div>
+              <label>El. Paštas:*</label>
+              <input type="email">
+            </div>
+          </div>
+          <div class="form-grid-3">
+            <div>
+              <label>Telefonas:*</label>
+              <input type="tel">
+            </div>
+            <div>
+              <label>Planuojama Data:*</label>
+              <input type="date">
+            </div>
+            <div>
+              <label>Pasirinkite Šalį:*</label>
+              <select>
+                <option>Italija (Roma)</option>
+                <option>Ispanija (Barselona)</option>
+                <option>Graikija (Atėnai)</option>
+                <option>Prancūzija (Paryžius)</option>
+                <option>Japonija (Tokijas)</option>
+                <option>Tailandas (Bankokas)</option>
+                <option>Egiptas (Hurgada)</option>
+                <option>Norvegija (Bergenas)</option>
+              </select>
+            </div>
+          </div>
+          <div id="services-wrapper">
+            <span class="services-title">Papildomos Paslaugos Užsakymui:</span>
+            <div class="services-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" class="checkbox-input"> Medicininių išlaidų draudimas (+15 €)
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" class="checkbox-input"> Lankstus atšaukimas be baudų (+25 €)
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" class="checkbox-input"> Privatus pervežimas oro uoste (+30 €)
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" class="checkbox-input"> Vietų pasirinkimas lėktuve (+10 €)
+              </label>
+            </div>
+          </div>
+          <div class="form-group-margin">
+            <label>Papildomi Pageidavimai:</label>
+            <textarea rows="3"></textarea>
+          </div>
+          <button type="submit" id="submit-btn-main">Pateikti Užsakymą 🚀</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title-border">Užsakymo Garantijos ir Sąlygos 📋</h3>
+        <div class="guarantee-grid">
+          <div class="guarantee-item">
+            <h4 class="guarantee-heading">⚡ Momentinis Patvirtinimas</h4>
+            <p class="guarantee-text">Pateikus formą, rezervacijos patvirtinimą ir sąskaitą el. paštu gausite per 15 minučių.</p>
+          </div>
+          <div class="guarantee-item">
+            <h4 class="guarantee-heading">🔒 Saugus Avansas</h4>
+            <p class="guarantee-text">Užsakymui užtvirtinti užtenka tik 20% avanso, o likusį mokėjimą galite atlikti prieš kelionę.</p>
+          </div>
+          <div class="guarantee-item">
+            <h4 class="guarantee-heading">📅 Nemokamas Keitimas</h4>
+            <p class="guarantee-text">Likus 14 dienų iki skrydžio, užsakymo datas ar keliautojų duomenis keiskite be jokio papildomo mokesčio.</p>
+          </div>
+          <div class="guarantee-item">
+            <h4 class="guarantee-heading">🛡️ Pinigų Grąžinimo Garantija</h4>
+            <p class="guarantee-text">Jei kelionė atšaukiama dėl organizatoriaus kaltės, 100% sumos grąžinama per 3 darbo dienas.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside id="sidebar-area">
+      <div class="card">
+        <h3 class="aside-title">Saugūs Mokėjimo Būdai 🔒</h3>
+        <p class="aside-subtitle">Atsiskaitykite jums patogiausiu ir saugiausiu būdu:</p>
+        <div id="payment-grid-box">
+          <div class="payment-item">🏦 El. Bankininkystė</div>
+          <div class="payment-item">💳 Visa / MasterCard</div>
+          <div class="payment-item">📱 Apple / Google Pay</div>
+          <div class="payment-item">📄 Bankinis Pavedimas</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="aside-title">Kas Įskaičiuota Skrydyje? 🧳</h3>
+        <ul class="baggage-list">
+          <li class="baggage-item">
+            <span>🎒 Rankinis bagažas (40x30x20)</span>
+            <span class="baggage-yes">TAIP</span>
+          </li>
+          <li class="baggage-item">
+            <span>🧳 Lagaminas į saloną (iki 10 kg)</span>
+            <span class="baggage-yes">TAIP</span>
+          </li>
+          <li class="baggage-item paid">
+            <span>🛄 Registruotas bagažas (20 kg)</span>
+            <span class="baggage-price">+25 €</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 class="aside-title">Kas Vyksta Po Užsakymo? 📩</h3>
+        <ul class="after-list">
+          <li class="after-item">
+            <span class="after-num">1.</span>
+            <span><b>El. pašto patvirtinimas:</b> Gausite rezervacijos kopiją su avanso sąskaita per 15 min.</span>
+          </li>
+          <li class="after-item">
+            <span class="after-num">2.</span>
+            <span><b>Sutarties pasirašymas:</b> Sutartis patvirtinama elektroniniu būdu vienu paspaudimu.</span>
+          </li>
+          <li class="after-item">
+            <span class="after-num">3.</span>
+            <span><b>Gaukite bilietus:</b> Skrydžio bilietai ir vaučeriai atsiunčiami likus 7 dienoms iki kelionės.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 class="aside-title">Dažni Klausimai ❓</h3>
+        <div class="faq-list">
+          <div class="faq-card-item">
+            <p class="faq-question">Kada reikia sumokėti likusią sumą?</p>
+            <p class="faq-answer">Likusi suma mokama likus ne mažiau kaip 21 d. iki skrydžio.</p>
+          </div>
+          <div class="faq-card-item">
+            <p class="faq-question">Ar galima keisti keliautojus?</p>
+            <p class="faq-answer">Taip, pavardės keitimas nemokamas likus 14 d. iki skrydžio.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="group-card-box">
+        <div class="group-top">
+          <div class="group-icon-title">
+            <div class="group-icon-box">👥</div>
+            <h3 class="group-title">Keliaujate su grupe, šeima ar kolegomis?</h3>
+          </div>
+          <span class="group-badge">-10% NUOLAIDA</span>
+        </div>
+        <p class="group-desc">
+          Planuojate didesnę išvyką? Mes pasirūpinsime, kad jūsų grupės kelionė būtų patogi ir nekeltų papildomų rūpesčių. Užsakant kelionę <b>5 ar daugiau asmenų kompanijai</b>, pritaikysite <b>10% nuolaidą</b> visam užsakymui!
+        </p>
+        <div class="group-contact">
+          <span>✉️ El. paštas grupių užsakymams:</span>
+          <span class="group-contact-email">grupems@turizmas.lt</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer id="main-footer">
+    <div class="footer-container">
+      <p class="footer-text">© 2026 Turizmo Portalas. Visos teisės saugomos.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
